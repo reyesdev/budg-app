@@ -25,14 +25,25 @@ class App extends Component {
 
     // ? Create buttons
     for (let i of numArr) {
-      buttonsMinus.push(<button key={i} onClick={() => this.handleMinus(i)}>-&nbsp;{i}</button>);
-      buttonsAdd.push(<button key={i} onClick={() => this.handleAdd(i)}>+&nbsp;{i}</button>)
+      buttonsMinus.push(<button key={i} className="btn btn-lg btn-default mb-3" onClick={() => this.handleMinus(i)}>-&nbsp;{i}</button>);
+      buttonsAdd.push(<button key={i} className="btn btn-sl btn-default mb-3" onClick={() => this.handleAdd(i)}>+&nbsp;{i}</button>)
     }
     return (
       <React.Fragment>
-        {this.state.budget}<br />
-        {buttonsMinus}<br />
-        {buttonsAdd}
+        <div class="container-fluid">
+          <h1>Budget</h1>
+          <h2 class="display-4">
+          {this.state.budget}
+          </h2>
+          <div class="row">
+            <div class="col-6 d-flex flex-column">
+              {buttonsMinus}
+            </div>
+            <div class="col-6 d-flex flex-column">
+              {buttonsAdd}
+            </div>
+          </div>
+        </div>   
       </React.Fragment>
     );
   }
