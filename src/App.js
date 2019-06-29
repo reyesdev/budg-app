@@ -10,6 +10,17 @@ class App extends Component {
       btnMinus: []
     };
   }
+  componentDidMount() {
+    if (localStorage.getItem("budgetstore") === null) {
+      this.setState({budget: this.state.budget});
+    } else {
+     let storedvalue = localStorage.getItem("budgetstore");
+     this.setState({budget: storedvalue});
+    }
+  }
+  componentDidUpdate() {
+    localStorage.setItem('budgetstore', this.state.budget);
+  }
   handleMinus = (value) => {
     let newvalue = this.state.budget - value;
     this.setState({budget: newvalue});
@@ -30,16 +41,16 @@ class App extends Component {
     }
     return (
       <React.Fragment>
-        <div class="container-fluid">
+        <div className="container-fluid">
           <h1>Budget</h1>
-          <h2 class="display-4">
+          <h2 className="display-4">
           {this.state.budget}
           </h2>
-          <div class="row">
-            <div class="col-6 d-flex flex-column">
+          <div className="row">
+            <div className="col-6 d-flex flex-column">
               {buttonsMinus}
             </div>
-            <div class="col-6 d-flex flex-column">
+            <div className="col-6 d-flex flex-column">
               {buttonsAdd}
             </div>
           </div>
