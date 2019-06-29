@@ -10,6 +10,17 @@ class App extends Component {
       btnMinus: []
     };
   }
+  componentDidMount() {
+    if (localStorage.getItem("budgetstore") === null) {
+      this.setState({budget: this.state.budget});
+    } else {
+     let storedvalue = localStorage.getItem("budgetstore");
+     this.setState({budget: storedvalue});
+    }
+  }
+  componentDidUpdate() {
+    localStorage.setItem('budgetstore', this.state.budget);
+  }
   handleMinus = (value) => {
     let newvalue = this.state.budget - value;
     this.setState({budget: newvalue});
@@ -17,6 +28,10 @@ class App extends Component {
   handleAdd = (value) => {
     let newvalue = this.state.budget + value;
     this.setState({budget: newvalue});
+  }
+  handleReset = () => {
+    this.setState({budget: 600});
+    localStorage.setItem('budgetstore', this.state.budget);
   }
   render() {
     const numArr = [1,5,10,20,50];
@@ -30,17 +45,30 @@ class App extends Component {
     }
     return (
       <React.Fragment>
-        <div class="container-fluid">
-          <h1>Budget</h1>
-          <h2 class="display-4">
-          {this.state.budget}
-          </h2>
-          <div class="row">
-            <div class="col-6 d-flex flex-column">
+        <div className="container-fluid">
+          <div className="row mb-0">
+            <div className="col-12">
+              <h1>Budget</h1>
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-12">
+              <h2 className="display-4">
+              {this.state.budget}
+              </h2>  
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-6 d-flex flex-column">
               {buttonsMinus}
             </div>
-            <div class="col-6 d-flex flex-column">
+            <div className="col-6 d-flex flex-column">
               {buttonsAdd}
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-12">
+              <button className="btn btn-sl btn-default mb-3" onClick={() => this.handleReset()}>Reset</button>
             </div>
           </div>
         </div>   
