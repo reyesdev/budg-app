@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import './App.css';
 
 class App extends Component {
@@ -7,7 +8,7 @@ class App extends Component {
     this.state = {
       budget: 600,
       numArr: [1,5,10,20,50],
-      btnMinus: []
+      mobileNav: false
     };
   }
   componentDidMount() {
@@ -21,6 +22,9 @@ class App extends Component {
   componentDidUpdate() {
     localStorage.setItem('budgetstore', this.state.budget);
   }
+  handleNav = () => {
+    this.setState({mobileNav: !this.state.mobileNav});
+  }
   handleMinus = (value) => {
     let newvalue = this.state.budget - value;
     this.setState({budget: newvalue});
@@ -33,45 +37,93 @@ class App extends Component {
     this.setState({budget: 600});
     localStorage.setItem('budgetstore', this.state.budget);
   }
+
   render() {
-    const numArr = [1,5,10,20,50];
+    // const numArr = [1,5,10,20,50];
     let buttonsMinus = [];
     let buttonsAdd = [];
 
     // ? Create buttons
-    for (let i of numArr) {
+    for (let i of this.state.numArr) {
       buttonsMinus.push(<button key={i} className="btn btn-lg btn-default mb-3" onClick={() => this.handleMinus(i)}>-&nbsp;{i}</button>);
       buttonsAdd.push(<button key={i} className="btn btn-sl btn-default mb-3" onClick={() => this.handleAdd(i)}>+&nbsp;{i}</button>)
     }
-    return (
-      <React.Fragment>
+
+    const routeIndex = () => {
+      return (
+        <React.Fragment>
+          <div className="container-fluid">
+            <div className="row mb-0">
+              <div className="col-12">
+                <h1>Budget</h1>
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-12">
+                <h2 className="display-4">
+                {this.state.budget}
+                </h2>  
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-6 d-flex flex-column">
+                {buttonsMinus}
+              </div>
+              <div className="col-6 d-flex flex-column">
+                {buttonsAdd}
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-12">
+                <button className="btn btn-sl btn-default mb-3" onClick={() => this.handleReset()}>Reset</button>
+              </div>
+            </div>
+          </div>   
+        </React.Fragment>  
+      );
+    }
+
+    const routeSettings = () => {
+      return (
         <div className="container-fluid">
           <div className="row mb-0">
             <div className="col-12">
-              <h1>Budget</h1>
+              <h2>Settings</h2>
             </div>
           </div>
-          <div className="row">
-            <div className="col-12">
-              <h2 className="display-4">
-              {this.state.budget}
-              </h2>  
-            </div>
+        </div>
+
+      );
+      
+    }
+
+    return (
+      <React.Fragment>
+        <Router>
+          <div>
+            <nav className="navbar navbar-expand-md navbar-dark bg-dark mb-4">
+              <a href="/" className="navbar-brand">BudgApp</a>
+              <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onClick={ this.handleNav } >
+                <span className="navbar-toggler-icon"></span>
+              </button>
+              <div className={ this.state.mobileNav ? "collapse navbar-collapse show" : "collapse navbar-collapse" } id="navbarCollapse">
+                <ul className="navbar-nav mr-auto">
+                  <li className="nav-item active">
+                    <Link to="/" className="nav-link">Home</Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link to="/settings/" className="nav-link">Settings</Link>
+                  </li>
+                </ul>
+              </div>
+              
+            </nav>
+            <Route path="/" exact component={routeIndex} />
+            <Route path="/settings/" component={routeSettings} />
           </div>
-          <div className="row">
-            <div className="col-6 d-flex flex-column">
-              {buttonsMinus}
-            </div>
-            <div className="col-6 d-flex flex-column">
-              {buttonsAdd}
-            </div>
-          </div>
-          <div className="row">
-            <div className="col-12">
-              <button className="btn btn-sl btn-default mb-3" onClick={() => this.handleReset()}>Reset</button>
-            </div>
-          </div>
-        </div>   
+        
+        
+        </Router>
       </React.Fragment>
     );
   }
