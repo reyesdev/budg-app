@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import { Update } from "./components/update";
 import './App.css';
 
 class App extends Component {
@@ -40,72 +41,71 @@ class App extends Component {
   }
   handleChange = (event) => {
     this.setState({value: event.target.value});
+    console.log("change " + event.target.value);
   }
   handleSubmit = (event) => {
+    event.preventDefault();
     this.setState({budget: this.state.value});
     localStorage.setItem('budgetstore', this.state.value);
-    event.preventDefault();
+    
   }
 
-  render() {
-    // const numArr = [1,5,10,20,50];
+   routeIndex = () => {
+    const numArr = [1,5,10,20,50];
     let buttonsMinus = [];
     let buttonsAdd = [];
 
     // ? Create buttons
-    for (let i of this.state.numArr) {
+    for (let i of numArr) {
       buttonsMinus.push(<button key={i} className="btn btn-lg btn-default mb-3" onClick={() => this.handleMinus(i)}>-&nbsp;{i}</button>);
       buttonsAdd.push(<button key={i} className="btn btn-sl btn-default mb-3" onClick={() => this.handleAdd(i)}>+&nbsp;{i}</button>)
     }
-
-    const routeIndex = () => {
-      return (
-        <React.Fragment>
-          <div className="container-fluid">
-            <div className="row">
-              <div className="col-12">
-                <h2 className="display-4">
-                {this.state.budget}
-                </h2>  
-              </div>
-            </div>
-            <div className="row">
-              <div className="col-6 d-flex flex-column">
-                {buttonsMinus}
-              </div>
-              <div className="col-6 d-flex flex-column">
-                {buttonsAdd}
-              </div>
-            </div>
-            <div className="row">
-              <div className="col-12">
-                <button className="btn btn-sl btn-default mb-3" onClick={() => this.handleReset()}>Reset</button>
-              </div>
-            </div>
-          </div>   
-        </React.Fragment>  
-      );
-    }
-
-    const routeSettings = () => {
-      return (
+    return (
+      <React.Fragment>
         <div className="container-fluid">
-          <div className="row mb-0">
+          <div className="row">
             <div className="col-12">
-              <h2>Settings</h2>
-              <form key={this.state.value.toString()} onSubmit={this.handleSubmit}>
-                <h3>Update budget.</h3>
-                <p>Manually update your budget below:</p>
-                <input  type='text' value={this.state.value} onChange={this.handleChange} />
-                <input type="submit" value="Submit" />
-              </form>
+              <h2 className="display-4">
+              {this.state.budget}
+              </h2>  
             </div>
           </div>
-        </div>
+          <div className="row">
+            <div className="col-6 d-flex flex-column">
+              {buttonsMinus}
+            </div>
+            <div className="col-6 d-flex flex-column">
+              {buttonsAdd}
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-12">
+              <button className="btn btn-sl btn-default mb-3" onClick={() => this.handleReset()}>Reset</button>
+            </div>
+          </div>
+        </div>   
+      </React.Fragment>  
+    );
+  }
 
-      );
-      
-    }
+  routeSettings = () => {
+    return (
+      <div className="container-fluid">
+        <div className="row mb-0">
+          <div className="col-12">
+            <h2>Settings</h2>
+            <Update change={this.handleChange} value={this.state.value} submit={this.handleSubmit} />
+          </div>
+        </div>
+      </div>
+
+    );
+    
+  }
+
+
+  render() {
+    
 
     return (
       <React.Fragment>
@@ -128,8 +128,8 @@ class App extends Component {
               </div>
               
             </nav>
-            <Route path="/" exact component={routeIndex} />
-            <Route path="/settings/" component={routeSettings} />
+            <Route path="/" exact component={this.routeIndex} />
+            <Route path="/settings/" exact component={this.routeSettings} />
           </div>
         
         
