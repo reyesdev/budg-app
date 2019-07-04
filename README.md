@@ -1,3 +1,3 @@
-# Budgapp
+# BudgApp
 
-A react app.
+A rapid budget calculator.
