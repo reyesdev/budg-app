@@ -7,8 +7,11 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      budget: 600,
+      initBudgetVal: 600,
+      budget: 0,
+      byWeek: 0,
       value: '',
+      hideByWeek: false,
       numArr: [1,5,10,20,50],
       mobileNav: false
     };
@@ -20,6 +23,16 @@ class App extends Component {
      let storedvalue = localStorage.getItem("budgetstore");
      this.setState({budget: storedvalue});
     }
+    if (this.state.budget === 0) {
+      let newBudget = this.state.initBudgetVal;
+      this.setState({budget: newBudget});
+    }
+    console.log('budget on mount is:' + this.state.budget);
+    console.log('component did mount and the byWeek is:' + this.state.byWeek);
+    if (this.state.byWeek === 0) {
+      let newByWeek = this.state.initBudgetVal / 4;
+      this.setState({byWeek: newByWeek});
+    }
   }
   componentDidUpdate() {
     localStorage.setItem('budgetstore', this.state.budget);
@@ -29,23 +42,48 @@ class App extends Component {
   }
   handleMinus = (value) => {
     let newvalue = this.state.budget - value;
+    let quartBudget = Math.trunc(parseInt(this.state.initBudgetVal / 4));
+
     this.setState({budget: newvalue});
+
+    let newByWeek = this.state.byWeek - value;
+    if (newByWeek <= 0) {
+      newByWeek = quartBudget;
+    }
+
+    console.log(newvalue);
+
+    if (newvalue <= quartBudget) {
+      this.setState({hideByWeek: true});
+      console.log('hide');
+    }
+    this.setState({byWeek: newByWeek});
   }
   handleAdd = (value) => {
     let newvalue = this.state.budget + value;
     this.setState({budget: newvalue});
+
+    let newByWeek = this.state.byWeek + value;
+    this.setState({byWeek: newByWeek});
   }
   handleReset = () => {
-    this.setState({budget: 600});
+    this.setState({budget: this.state.initBudgetVal});
     localStorage.setItem('budgetstore', this.state.budget);
+
+    let newByWeek = this.state.initBudgetVal / 4;
+    this.setState({byWeek: newByWeek});
+    this.setState({hideByWeek: false});
+    
   }
   handleChange = (event) => {
     this.setState({value: event.target.value});
-    console.log("change " + event.target.value);
   }
   handleSubmit = (event) => {
     event.preventDefault();
+    this.setState({initBudgetVal: this.state.value});
     this.setState({budget: this.state.value});
+    let newByWeek = this.state.value / 4;
+    this.setState({byWeek: newByWeek});
     localStorage.setItem('budgetstore', this.state.value);
     
   }
@@ -64,10 +102,15 @@ class App extends Component {
       <React.Fragment>
         <div className="container-fluid">
           <div className="row">
-            <div className="col-12">
-              <h2 className="display-4">
-              {this.state.budget}
+            <div className="col-7">
+              <h2 className={ this.state.hideByWeek ? "display-4 d-none" : "display-4" }>
+              {this.state.byWeek}
               </h2>  
+            </div>
+            <div className="col-4">
+              <h2 className="display-4">
+                {this.state.budget}
+              </h2>
             </div>
           </div>
           <div className="row">
