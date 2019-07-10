@@ -16,23 +16,50 @@ class App extends Component {
       mobileNav: false
     };
   }
-  componentDidMount() {
+  componentWillMount() {
     if (localStorage.getItem("budgetstore") === null) {
-      this.setState({budget: this.state.budget});
+      // * is null give it the init val
+      this.setState({budget: this.state.initBudgetVal});
     } else {
-     let storedvalue = localStorage.getItem("budgetstore");
-     this.setState({budget: storedvalue});
+      // * not null then get the current val
+      let storedvalue = localStorage.getItem("budgetstore");
+      this.setState({budget: storedvalue});
+    }
+
+  }
+  
+  componentDidMount() {
+    let quartBudget = Math.trunc(parseInt(this.state.initBudgetVal / 4));
+    if (this.state.budget <= quartBudget) {
+      this.setState({hideByWeek: true});
+      console.log('hide');
+    }
+        if (this.state.budget === 0) {
+          let newBudget = this.state.initBudgetVal;
+          this.setState({budget: newBudget});
+        }
+        if (this.state.byWeek === 0) {
+          let newByWeek = this.state.initBudgetVal / 4;
+          this.setState({byWeek: newByWeek});
+        }
+    console.log('initial:' + this.state.initBudgetVal);
+    console.log('budget on mount is:' + this.state.budget);
+    if (localStorage.getItem("budgetstore") === null) {
+      // * If the budget stored is null give it the init val
+      console.log('it\'s null budget is:' + this.state.budget);
+    } else {
+      // * if it is not null then get the current val
+      console.log('it\'s NOT null budget is:' + this.state.budget);
     }
     if (this.state.budget === 0) {
-      let newBudget = this.state.initBudgetVal;
-      this.setState({budget: newBudget});
+      console.log('budget is 0 so using init budget the new budget is:' + this.state.budget);
     }
-    console.log('budget on mount is:' + this.state.budget);
-    console.log('component did mount and the byWeek is:' + this.state.byWeek);
     if (this.state.byWeek === 0) {
-      let newByWeek = this.state.initBudgetVal / 4;
-      this.setState({byWeek: newByWeek});
+      console.log('byweek is 0 so using init budget the new byweek budget is:' + this.state.byWeek);
     }
+
+    
+    console.log('component did mount and the byWeek is:' + this.state.byWeek);
   }
   componentDidUpdate() {
     localStorage.setItem('budgetstore', this.state.budget);
@@ -67,8 +94,15 @@ class App extends Component {
     this.setState({byWeek: newByWeek});
   }
   handleReset = () => {
+    let quartBudget = Math.trunc(parseInt(this.state.initBudgetVal / 4));
+
     this.setState({budget: this.state.initBudgetVal});
     localStorage.setItem('budgetstore', this.state.budget);
+    
+    if (this.state.budget <= quartBudget) {
+      this.setState({hideByWeek: true});
+      console.log('hide');
+    }
 
     let newByWeek = this.state.initBudgetVal / 4;
     this.setState({byWeek: newByWeek});
