@@ -26,6 +26,10 @@ class App extends Component {
       this.setState({budget: storedvalue});
     }
 
+    let storedWeekValue = localStorage.getItem("byweekstore");
+    this.setState({byWeek: storedWeekValue});
+    
+
   }
   
   componentDidMount() {
@@ -63,6 +67,7 @@ class App extends Component {
   }
   componentDidUpdate() {
     localStorage.setItem('budgetstore', this.state.budget);
+    localStorage.setItem('byweekstore', this.state.byWeek);
   }
   handleNav = () => {
     this.setState({mobileNav: !this.state.mobileNav});
