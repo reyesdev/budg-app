@@ -10,6 +10,8 @@ class App extends Component {
       initBudgetVal: 600,
       budget: 0,
       byWeek: 0,
+      undoBudgetArray: [],
+      undoByWeekArray: [],
       value: '',
       hideByWeek: false,
       numArr: [1,5,10,20,50],
@@ -62,7 +64,6 @@ class App extends Component {
       console.log('byweek is 0 so using init budget the new byweek budget is:' + this.state.byWeek);
     }
 
-    
     console.log('component did mount and the byWeek is:' + this.state.byWeek);
   }
   componentDidUpdate() {
@@ -72,8 +73,26 @@ class App extends Component {
   handleNav = () => {
     this.setState({mobileNav: !this.state.mobileNav});
   }
+  handleUndo = () => {
+    this.setState({budget:this.state.undoBudgetArray[this.state.undoBudgetArray.length - 1]});
+
+    this.setState({byWeek:this.state.undoByWeekArray[this.state.undoByWeekArray.length - 1]});  }
+
+  undoBudget = () => {
+    let currentBudgetValue = this.state.budget;
+    let currentByWeekValue = this.state.byWeek;
+    this.setState({
+      undoBudgetArray: [...this.state.undoBudgetArray, currentBudgetValue]
+    });
+    this.setState({
+      undoByWeekArray: [...this.state.undoByWeekArray, currentByWeekValue]
+    });
+
+  }
   handleMinus = (value) => {
-    let newvalue = this.state.budget - value;
+    let currentBudgetValue = this.state.budget;
+    this.undoBudget();
+    let newvalue = currentBudgetValue - value;
     let quartBudget = Math.trunc(parseInt(this.state.initBudgetVal / 4));
 
     this.setState({budget: newvalue});
@@ -82,20 +101,13 @@ class App extends Component {
     if (newByWeek <= 0) {
       newByWeek = quartBudget;
     }
-
+    
     console.log(newvalue);
 
     if (newvalue <= quartBudget) {
       this.setState({hideByWeek: true});
       console.log('hide');
     }
-    this.setState({byWeek: newByWeek});
-  }
-  handleAdd = (value) => {
-    let newvalue = this.state.budget + value;
-    this.setState({budget: newvalue});
-
-    let newByWeek = this.state.byWeek + value;
     this.setState({byWeek: newByWeek});
   }
   handleReset = () => {
@@ -130,12 +142,11 @@ class App extends Component {
    routeIndex = () => {
     const numArr = [1,5,10,20,50];
     let buttonsMinus = [];
-    let buttonsAdd = [];
 
     // ? Create buttons
     for (let i of numArr) {
       buttonsMinus.push(<button key={i} className="btn btn-lg btn-default mb-3" onClick={() => this.handleMinus(i)}>-&nbsp;{i}</button>);
-      buttonsAdd.push(<button key={i} className="btn btn-sl btn-default mb-3" onClick={() => this.handleAdd(i)}>+&nbsp;{i}</button>)
+      // buttonsAdd.push(<button key={i} className="btn btn-sl btn-default mb-3" onClick={() => this.handleAdd(i)}>+&nbsp;{i}</button>)
     }
     return (
       <React.Fragment>
@@ -157,7 +168,7 @@ class App extends Component {
               {buttonsMinus}
             </div>
             <div className="col-6 d-flex flex-column">
-              {buttonsAdd}
+              <button className="btn btn-sl btn-default mb-3" onClick={() => this.handleUndo()}>Undo</button>
             </div>
           </div>
           <div className="row">
